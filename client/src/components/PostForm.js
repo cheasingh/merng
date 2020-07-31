@@ -21,6 +21,7 @@ function PostForm() {
 
       proxy.writeQuery({
         //   this part of code, add local cache query with the latest one
+        // create return data from createPost to getPost query.
         query: FETCH_POSTS_QUERY,
         data: { getPosts: [result.data.createPost, ...data.getPosts] },
       });
