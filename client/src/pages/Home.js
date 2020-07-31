@@ -1,10 +1,15 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useQuery } from "@apollo/react-hooks";
-import gql from "graphql-tag";
 import { Grid } from "semantic-ui-react";
+
+import { AuthContext } from "../context/auth";
 import PostCard from "../components/PostCard";
+import PostForm from "../components/PostForm";
+import { FETCH_POSTS_QUERY } from "../util/graphql";
 
 function Home() {
+  const { user } = useContext(AuthContext);
+
   // note: without set default value before destructuring, it will return undefined, { getPosts: posts } = {} } set this default value to nothing.
   const { loading, data: { getPosts: posts } = {} } = useQuery(
     FETCH_POSTS_QUERY
@@ -16,6 +21,12 @@ function Home() {
         <h1>Recent Posts</h1>
       </Grid.Row>
       <Grid.Row>
+        {user && (
+          <Grid.Column>
+            <PostForm />
+          </Grid.Column>
+        )}
+
         {loading ? (
           <h1>Loading posts...</h1>
         ) : (
@@ -30,27 +41,5 @@ function Home() {
     </Grid>
   );
 }
-
-const FETCH_POSTS_QUERY = gql`
-  {
-    getPosts {
-      id
-      body
-      createdAt
-      username
-      likeCount
-      likes {
-        username
-      }
-      commentCount
-      comments {
-        id
-        username
-        createdAt
-        body
-      }
-    }
-  }
-`;
 
 export default Home;
